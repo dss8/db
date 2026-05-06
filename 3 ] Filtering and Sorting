@@ -1,0 +1,142 @@
+# CREATE DATABASE
+
+CREATE DATABASE AcademicDB;
+USE AcademicDB;
+
+# CREATE STUDENT TABLE
+
+CREATE TABLE Student (
+    StudentID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100),
+    Email VARCHAR(100),
+    Age INT,
+    Address VARCHAR(200)
+);
+
+# CREATE INSTRUCTOR TABLE
+
+CREATE TABLE Instructor (
+    InstructorID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100),
+    Email VARCHAR(100),
+    Department VARCHAR(100)
+);
+
+# CREATE COURSE TABLE
+
+CREATE TABLE Course (
+    CourseID INT AUTO_INCREMENT PRIMARY KEY,
+    CourseName VARCHAR(100),
+    Credits INT,
+    InstructorID INT,
+    FOREIGN KEY (InstructorID)
+    REFERENCES Instructor(InstructorID)
+);
+
+# CREATE ENROLLMENT TABLE
+
+CREATE TABLE Enrollment (
+    EnrollmentID INT AUTO_INCREMENT PRIMARY KEY,
+    StudentID INT,
+    CourseID INT,
+    EnrollmentDate DATE,
+    FOREIGN KEY (StudentID)
+    REFERENCES Student(StudentID),
+    FOREIGN KEY (CourseID)
+    REFERENCES Course(CourseID)
+);
+
+# INSERT DATA INTO STUDENT TABLE
+
+INSERT INTO Student(Name, Email, Age, Address)
+VALUES
+('Puja','puja@gmail.com',20,'Ratnagiri'),
+('Rahul','rahul@gmail.com',21,'Pune'),
+('Sneha','sneha@gmail.com',22,'Mumbai'),
+('Amit','amit@gmail.com',23,'Delhi');
+
+# INSERT DATA INTO INSTRUCTOR TABLE
+
+INSERT INTO Instructor(Name, Email, Department)
+VALUES
+('Dr Sharma','sharma@gmail.com','CS'),
+('Prof Patil','patil@gmail.com','AI');
+
+# INSERT DATA INTO COURSE TABLE
+
+INSERT INTO Course(CourseName, Credits, InstructorID)
+VALUES
+('DBMS',4,1),
+('AI',5,2),
+('Python',3,1);
+
+# INSERT DATA INTO ENROLLMENT TABLE
+
+INSERT INTO Enrollment(StudentID, CourseID, EnrollmentDate)
+VALUES
+(1,1,'2026-05-01'),
+(2,2,'2026-05-02'),
+(3,1,'2026-05-03'),
+(4,3,'2026-05-04');
+
+# FILTERING DATA USING WHERE
+
+SELECT * FROM Student
+WHERE Age > 21;
+
+# FILTERING BY INSTRUCTOR
+
+SELECT Course.CourseName, Instructor.Name
+FROM Course
+INNER JOIN Instructor
+ON Course.InstructorID = Instructor.InstructorID
+WHERE Instructor.Name = 'Dr Sharma';
+
+# SORTING DATA USING ORDER BY ALPHABETICALLY
+
+SELECT * FROM Student
+ORDER BY Name ASC;
+
+# SORTING COURSES BY CREDITS
+
+SELECT * FROM Course
+ORDER BY Credits DESC;
+
+# AGGREGATION USING GROUP BY
+
+SELECT CourseID, COUNT(StudentID) AS TotalStudents
+FROM Enrollment
+GROUP BY CourseID;
+
+# AVERAGE AGE OF STUDENTS
+
+SELECT AVG(Age) AS AverageAge
+FROM Student;
+
+# NESTED SUBQUERY - STUDENTS ENROLLED IN COURSE 1
+
+SELECT Name
+FROM Student
+WHERE StudentID IN (
+    SELECT StudentID
+    FROM Enrollment
+    WHERE CourseID = 1
+);
+
+# NESTED SUBQUERY - COURSE WITH MAXIMUM CREDITS
+
+SELECT CourseName
+FROM Course
+WHERE Credits = (
+    SELECT MAX(Credits)
+    FROM Course
+);
+
+# NESTED SUBQUERY - STUDENTS ABOVE AVERAGE AGE
+
+SELECT Name
+FROM Student
+WHERE Age > (
+    SELECT AVG(Age)
+    FROM Student
+);
