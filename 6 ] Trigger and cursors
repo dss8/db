@@ -1,0 +1,139 @@
+# CREATE DATABASE
+
+CREATE DATABASE EmployeeDB;
+USE EmployeeDB;
+
+# CREATE EMPLOYEES TABLE
+
+CREATE TABLE Employees (
+    EmpID INT AUTO_INCREMENT PRIMARY KEY,
+    EmpName VARCHAR(100),
+    Department VARCHAR(100),
+    Salary DECIMAL(10,2)
+);
+
+# CREATE EMPLOYEE_AUDIT TABLE
+
+CREATE TABLE Employee_Audit (
+    AuditID INT AUTO_INCREMENT PRIMARY KEY,
+    EmpID INT,
+    ActionType VARCHAR(20),
+    OldName VARCHAR(100),
+    NewName VARCHAR(100),
+    ActionDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+# DISPLAY TABLE STRUCTURE
+
+DESC Employees;
+
+DESC Employee_Audit;
+
+# INSERT TRIGGER
+# LOG INSERT OPERATIONS
+
+DELIMITER //
+
+CREATE TRIGGER trg_employee_insert
+AFTER INSERT ON Employees
+FOR EACH ROW
+
+BEGIN
+
+    INSERT INTO Employee_Audit(
+        EmpID,
+        ActionType,
+        NewName
+    )
+
+    VALUES(
+        NEW.EmpID,
+        'INSERT',
+        NEW.EmpName
+    );
+
+END //
+
+DELIMITER ;
+
+# UPDATE TRIGGER
+# LOG UPDATE OPERATIONS
+
+DELIMITER //
+
+CREATE TRIGGER trg_employee_update
+AFTER UPDATE ON Employees
+FOR EACH ROW
+
+BEGIN
+
+    INSERT INTO Employee_Audit(
+        EmpID,
+        ActionType,
+        OldName,
+        NewName
+    )
+
+    VALUES(
+        OLD.EmpID,
+        'UPDATE',
+        OLD.EmpName,
+        NEW.EmpName
+    );
+
+END //
+
+DELIMITER ;
+
+# DELETE TRIGGER
+# LOG DELETE OPERATIONS
+
+DELIMITER //
+
+CREATE TRIGGER trg_employee_delete
+AFTER DELETE ON Employees
+FOR EACH ROW
+
+BEGIN
+
+    INSERT INTO Employee_Audit(
+        EmpID,
+        ActionType,
+        OldName
+    )
+
+    VALUES(
+        OLD.EmpID,
+        'DELETE',
+        OLD.EmpName
+    );
+
+END //
+
+DELIMITER ;
+
+# INSERT DATA INTO EMPLOYEES TABLE
+
+INSERT INTO Employees(EmpName, Department, Salary)
+VALUES
+('Abhay','IT',50000),
+('Rahul','HR',40000);
+
+# DISPLAY EMPLOYEES TABLE
+
+SELECT * FROM Employees;
+
+# UPDATE EMPLOYEE RECORD
+
+UPDATE Employees
+SET EmpName = 'Abhay Patil'
+WHERE EmpID = 1;
+
+# DELETE EMPLOYEE RECORD
+
+DELETE FROM Employees
+WHERE EmpID = 2;
+
+# DISPLAY AUDIT LOG TABLE
+
+SELECT * FROM Employee_Audit;
