@@ -1,0 +1,110 @@
+CREATE DATABASE AcademicDB;
+USE AcademicDB;
+
+CREATE TABLE Student (
+    StudentID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100),
+    Email VARCHAR(100),
+    Age INT,
+    Address VARCHAR(200)
+);
+
+CREATE TABLE Instructor (
+    InstructorID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100),
+    Email VARCHAR(100),
+    Department VARCHAR(100)
+);
+
+CREATE TABLE Course (
+    CourseID INT AUTO_INCREMENT PRIMARY KEY,
+    CourseName VARCHAR(100),
+    Credits INT,
+    InstructorID INT,
+    FOREIGN KEY (InstructorID)
+    REFERENCES Instructor(InstructorID)
+);
+
+CREATE TABLE Enrollment (
+    EnrollmentID INT AUTO_INCREMENT PRIMARY KEY,
+    StudentID INT,
+    CourseID INT,
+    EnrollmentDate DATE,
+    FOREIGN KEY (StudentID)
+    REFERENCES Student(StudentID),
+    FOREIGN KEY (CourseID)
+    REFERENCES Course(CourseID)
+);
+
+INSERT INTO Student (Name, Email, Age, Address)
+VALUES
+('Puja', 'puja@gmail.com', 20, 'Ratnagiri'),
+('Rahul', 'rahul@gmail.com', 21, 'Pune'),
+('Sneha', 'sneha@gmail.com', 22, 'Mumbai');
+
+INSERT INTO Instructor (Name, Email, Department)
+VALUES
+('Dr Sharma', 'sharma@gmail.com', 'CS'),
+('Prof Patil', 'patil@gmail.com', 'AI');
+
+INSERT INTO Course (CourseName, Credits, InstructorID)
+VALUES
+('DBMS', 4, 1),
+('AI', 5, 2);
+
+INSERT INTO Enrollment (StudentID, CourseID, EnrollmentDate)
+VALUES
+(1, 1, '2026-05-01'),
+(2, 2, '2026-05-02'),
+(3, 1, '2026-05-03');
+
+CREATE VIEW student_view AS
+SELECT StudentID, Name, Email, Age
+FROM Student;
+
+CREATE VIEW student_course_view AS
+SELECT
+s.StudentID,
+s.Name,
+c.CourseName,
+e.EnrollmentDate
+FROM Student s
+INNER JOIN Enrollment e
+ON s.StudentID = e.StudentID
+INNER JOIN Course c
+ON e.CourseID = c.CourseID;
+
+SELECT * FROM student_view;
+
+SELECT * FROM student_course_view;
+
+UPDATE student_view
+SET Name = 'Puja Updated'
+WHERE StudentID = 1;
+
+SELECT * FROM student_view;
+
+DELETE FROM Enrollment
+WHERE StudentID = 3;
+
+DELETE FROM Student
+WHERE StudentID = 3;
+
+SELECT * FROM student_view;
+
+CREATE INDEX idx_student_age
+ON Student(Age);
+
+CREATE INDEX idx_course_name
+ON Course(CourseName);
+
+SHOW INDEX FROM Student;
+
+SHOW INDEX FROM Course;
+
+SELECT * FROM Student
+WHERE Age = 21;
+
+EXPLAIN
+SELECT * FROM Student
+WHERE Age = 21;
