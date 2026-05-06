@@ -1,0 +1,114 @@
+CREATE DATABASE AcademicDB;
+USE AcademicDB;
+
+CREATE TABLE Student (
+    StudentID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE,
+    Age INT,
+    Address VARCHAR(200)
+);
+
+CREATE TABLE Instructor (
+    InstructorID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE,
+    Department VARCHAR(100)
+);
+
+CREATE TABLE Course (
+    CourseID INT AUTO_INCREMENT PRIMARY KEY,
+    CourseName VARCHAR(100) NOT NULL,
+    Credits INT,
+    InstructorID INT,
+    FOREIGN KEY (InstructorID)
+    REFERENCES Instructor(InstructorID)
+);
+
+CREATE TABLE Enrollment (
+    EnrollmentID INT AUTO_INCREMENT PRIMARY KEY,
+    StudentID INT,
+    CourseID INT,
+    EnrollmentDate DATE,
+    FOREIGN KEY (StudentID)
+    REFERENCES Student(StudentID),
+    FOREIGN KEY (CourseID)
+    REFERENCES Course(CourseID)
+);
+
+INSERT INTO Student (Name, Email, Age, Address)
+VALUES
+('Puja', 'puja@gmail.com', 20, 'Pune'),
+('Rahul', 'rahul@gmail.com', 21, 'Mumbai'),
+('Sneha', 'sneha@gmail.com', 22, 'Nashik'),
+('Amit', 'amit@gmail.com', 23, 'Nagpur'),
+('Neha', 'neha@gmail.com', 20, 'Delhi');
+
+INSERT INTO Instructor (Name, Email, Department)
+VALUES
+('Dr Sharma', 'sharma@gmail.com', 'CS'),
+('Prof Patil', 'patil@gmail.com', 'AI'),
+('Dr Joshi', 'joshi@gmail.com', 'IT'),
+('Dr Kulkarni', 'kulkarni@gmail.com', 'DS'),
+('Prof Deshmukh', 'deshmukh@gmail.com', 'ECE');
+
+INSERT INTO Course (CourseName, Credits, InstructorID)
+VALUES
+('DBMS', 4, 1),
+('AI', 5, 2),
+('DSA', 4, 3),
+('Python', 3, 4),
+('ML', 5, 5);
+
+INSERT INTO Enrollment (StudentID, CourseID, EnrollmentDate)
+VALUES
+(1, 1, '2026-05-01'),
+(2, 2, '2026-05-02'),
+(3, 3, '2026-05-03'),
+(4, 4, '2026-05-04'),
+(5, 5, '2026-05-05');
+
+SELECT * FROM Student;
+
+SELECT * FROM Instructor;
+
+SELECT * FROM Course;
+
+SELECT * FROM Enrollment;
+
+DESC Student;
+
+DESC Instructor;
+
+DESC Course;
+
+DESC Enrollment;
+
+SELECT Student.Name, Course.CourseName
+FROM Student
+INNER JOIN Enrollment
+ON Student.StudentID = Enrollment.StudentID
+INNER JOIN Course
+ON Enrollment.CourseID = Course.CourseID;
+
+UPDATE Student
+SET Address = 'Pune City'
+WHERE StudentID = 1;
+
+DELETE FROM Enrollment
+WHERE EnrollmentID = 5;
+
+SELECT * FROM Student
+WHERE Age > 20;
+
+SELECT * FROM Course
+ORDER BY Credits DESC;
+
+ALTER TABLE Student
+ADD Phone VARCHAR(15);
+
+SELECT COUNT(*) AS TotalStudents
+FROM Student;
+
+SELECT AVG(Age) AS AverageAge
+FROM Student;
