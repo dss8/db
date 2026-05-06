@@ -1,0 +1,106 @@
+# CREATE DATABASE
+
+CREATE DATABASE CustomerOrderDB;
+USE CustomerOrderDB;
+
+# CREATE CUSTOMERS TABLE
+
+CREATE TABLE Customers (
+    CustomerID INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerName VARCHAR(100),
+    City VARCHAR(100)
+);
+
+# CREATE ORDERS TABLE
+
+CREATE TABLE Orders (
+    OrderID INT AUTO_INCREMENT PRIMARY KEY,
+    ProductName VARCHAR(100),
+    Amount DECIMAL(10,2),
+    CustomerID INT
+);
+
+# INSERT DATA INTO CUSTOMERS TABLE
+
+INSERT INTO Customers(CustomerName, City)
+VALUES
+('Abhay','Pune'),
+('Rahul','Mumbai'),
+('Sneha','Delhi'),
+('Amit','Nagpur');
+
+# INSERT DATA INTO ORDERS TABLE
+
+INSERT INTO Orders(ProductName, Amount, CustomerID)
+VALUES
+('Laptop',55000,1),
+('Mobile',20000,2),
+('Tablet',15000,1),
+('Keyboard',2000,5);
+
+# DISPLAY CUSTOMERS TABLE
+
+SELECT * FROM Customers;
+
+# DISPLAY ORDERS TABLE
+
+SELECT * FROM Orders;
+
+# INNER JOIN
+# RETRIEVE ONLY CUSTOMERS WHO HAVE PLACED ORDERS
+
+SELECT Customers.CustomerID,
+Customers.CustomerName,
+Orders.OrderID,
+Orders.ProductName,
+Orders.Amount
+FROM Customers
+INNER JOIN Orders
+ON Customers.CustomerID = Orders.CustomerID;
+
+# LEFT JOIN
+# RETRIEVE ALL CUSTOMERS INCLUDING THOSE WITHOUT ORDERS
+
+SELECT Customers.CustomerID,
+Customers.CustomerName,
+Orders.OrderID,
+Orders.ProductName,
+Orders.Amount
+FROM Customers
+LEFT JOIN Orders
+ON Customers.CustomerID = Orders.CustomerID;
+
+# RIGHT JOIN
+# RETRIEVE ALL ORDERS INCLUDING ORDERS WITHOUT MATCHING CUSTOMERS
+
+SELECT Customers.CustomerID,
+Customers.CustomerName,
+Orders.OrderID,
+Orders.ProductName,
+Orders.Amount
+FROM Customers
+RIGHT JOIN Orders
+ON Customers.CustomerID = Orders.CustomerID;
+
+# FULL OUTER JOIN
+# RETRIEVE ALL CUSTOMERS AND ALL ORDERS INCLUDING NON-MATCHING RECORDS
+
+SELECT Customers.CustomerID,
+Customers.CustomerName,
+Orders.OrderID,
+Orders.ProductName,
+Orders.Amount
+FROM Customers
+LEFT JOIN Orders
+ON Customers.CustomerID = Orders.CustomerID
+
+UNION
+
+SELECT Customers.CustomerID,
+Customers.CustomerName,
+Orders.OrderID,
+Orders.ProductName,
+Orders.Amount
+FROM Customers
+RIGHT JOIN Orders
+ON Customers.CustomerID = Orders.CustomerID;
