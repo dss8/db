@@ -1,0 +1,101 @@
+# CREATE DATABASE
+
+CREATE DATABASE EmployeeDB;
+USE EmployeeDB;
+
+# CREATE EMPLOYEES TABLE
+
+CREATE TABLE Employees (
+    EmpID INT AUTO_INCREMENT PRIMARY KEY,
+    EmpName VARCHAR(100),
+    Department VARCHAR(100),
+    Salary DECIMAL(10,2)
+);
+
+# INSERT DATA INTO EMPLOYEES TABLE
+
+INSERT INTO Employees(EmpName, Department, Salary)
+VALUES
+('Abhay','IT',50000),
+('Rahul','HR',40000),
+('Sneha','IT',60000),
+('Amit','Finance',45000);
+
+# DISPLAY ORIGINAL EMPLOYEE DATA
+
+SELECT * FROM Employees;
+
+# CURSOR PROCEDURE
+# INCREASE SALARY BY 10% FOR IT DEPARTMENT EMPLOYEES
+
+DELIMITER //
+
+CREATE PROCEDURE UpdateSalary()
+
+BEGIN
+
+    DECLARE done INT DEFAULT 0;
+
+    DECLARE v_EmpID INT;
+
+    DECLARE v_Department VARCHAR(100);
+
+    # CREATE CURSOR
+
+    DECLARE emp_cursor CURSOR FOR
+    SELECT EmpID, Department
+    FROM Employees;
+
+    # HANDLER FOR END OF CURSOR
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND
+    SET done = 1;
+
+    # OPEN CURSOR
+
+    OPEN emp_cursor;
+
+    # START LOOP
+
+    read_loop: LOOP
+
+        # FETCH ROW DATA
+
+        FETCH emp_cursor
+        INTO v_EmpID, v_Department;
+
+        # EXIT LOOP WHEN NO MORE ROWS
+
+        IF done = 1 THEN
+            LEAVE read_loop;
+        END IF;
+
+        # CHECK DEPARTMENT CONDITION
+
+        IF v_Department = 'IT' THEN
+
+            # UPDATE SALARY BY 10%
+
+            UPDATE Employees
+            SET Salary = Salary + (Salary * 0.10)
+            WHERE EmpID = v_EmpID;
+
+        END IF;
+
+    END LOOP;
+
+    # CLOSE CURSOR
+
+    CLOSE emp_cursor;
+
+END //
+
+DELIMITER ;
+
+# CALL PROCEDURE
+
+CALL UpdateSalary();
+
+# DISPLAY UPDATED EMPLOYEE DATA
+
+SELECT * FROM Employees;
